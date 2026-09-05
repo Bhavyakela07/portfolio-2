@@ -64,3 +64,23 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #334155;
 }
+
+/* ── Accessibility: Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── WebGL Fallback: subtle radial gradient when canvas unavailable ── */
+.webgl-fallback-bg {
+  background: radial-gradient(
+    ellipse 70% 50% at 50% 45%,
+    rgba(99, 102, 241, 0.06) 0%,
+    rgba(6, 182, 212, 0.03) 35%,
+    transparent 70%
+  );
+}

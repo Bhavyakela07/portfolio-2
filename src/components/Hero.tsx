@@ -33,7 +33,7 @@ export const Hero: React.FC<HeroProps> = ({ openCmdK }) => {
 
       {/* ── 2. PERFECTLY FRAMED HERO TITLE: "HI, I'M BHAVYA" ── */}
       <div className="my-auto w-full text-center relative z-10 py-2 sm:py-4">
-        <FadeIn delay={0.15} y={30} className="w-full flex items-center justify-center">
+        <FadeIn delay={0.15} y={30} blur={3} className="w-full flex items-center justify-center">
           <h1
             className="hero-heading font-black uppercase tracking-tight leading-none whitespace-nowrap text-center select-none"
             style={{ fontSize: 'clamp(2.4rem, 11vw, 10.5rem)' }}

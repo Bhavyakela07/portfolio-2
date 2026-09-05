@@ -57,15 +57,28 @@ const CATEGORIES = [
 
 export const UnifiedTechUniverse: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<string>('all');
+  const activeCategoryRef = useRef<string>(activeCategory);
   const [selectedNode, setSelectedNode] = useState<TechItem | null>(null);
   const [hoveredNode, setHoveredNode] = useState<TechItem | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
+    activeCategoryRef.current = activeCategory;
+  }, [activeCategory]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setPrefersReducedMotion(mediaQuery.matches);
+
+    if (mediaQuery.matches) return;
+
     const canvas = canvasRef.current;
     const container = containerRef.current;
     if (!canvas || !container) return;
+
+    const isMobile = window.innerWidth < 768;
 
     // ── Setup Three.js WebGL Scene ──
     const scene = new THREE.Scene();
@@ -74,7 +87,7 @@ export const UnifiedTechUniverse: React.FC = () => {
 
     const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1 : 2));
 
     // Lights
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
@@ -86,7 +99,7 @@ export const UnifiedTechUniverse: React.FC = () => {
 
     // ── Central AI Core Orb ──
     const coreGroup = new THREE.Group();
-    const wireGeo = new THREE.IcosahedronGeometry(1.2, 2);
+    const wireGeo = new THREE.IcosahedronGeometry(1.2, isMobile ? 1 : 2);
     const wireMat = new THREE.MeshStandardMaterial({
       color: 0xa855f7,
       wireframe: true,
@@ -96,7 +109,7 @@ export const UnifiedTechUniverse: React.FC = () => {
     const wireMesh = new THREE.Mesh(wireGeo, wireMat);
     coreGroup.add(wireMesh);
 
-    const innerGeo = new THREE.SphereGeometry(0.65, 32, 32);
+    const innerGeo = new THREE.SphereGeometry(0.65, isMobile ? 16 : 32, isMobile ? 16 : 32);
     const innerMat = new THREE.MeshStandardMaterial({
       color: 0x38bdf8,
       emissive: 0x38bdf8,
@@ -109,7 +122,7 @@ export const UnifiedTechUniverse: React.FC = () => {
 
     // ── Node Meshes Array ──
     const nodeMeshes: { mesh: THREE.Mesh; node: TechItem }[] = [];
-    const sphereGeo = new THREE.SphereGeometry(0.35, 32, 32);
+    const sphereGeo = new THREE.SphereGeometry(0.35, isMobile ? 16 : 32, isMobile ? 16 : 32);
 
     TECH_NODES.forEach((node) => {
       const mat = new THREE.MeshStandardMaterial({
@@ -118,6 +131,7 @@ export const UnifiedTechUniverse: React.FC = () => {
         emissiveIntensity: 0.6,
         roughness: 0.2,
         metalness: 0.8,
+        transparent: true,
       });
       const mesh = new THREE.Mesh(sphereGeo, mat);
       mesh.position.set(...node.position);
@@ -131,7 +145,6 @@ export const UnifiedTechUniverse: React.FC = () => {
 
     let isMouseDown = false;
     let previousMousePosition = { x: 0, y: 0 };
-    const rotationGroup = new THREE.Group();
 
     const handlePointerMove = (event: MouseEvent) => {
       const rect = canvas.getBoundingClientRect();
@@ -193,23 +206,34 @@ export const UnifiedTechUniverse: React.FC = () => {
 
     window.addEventListener('resize', handleResize);
 
+    // ── Intersection Observer ──
+    let isVisible = true;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        isVisible = entries[0].isIntersecting;
+      },
+      { threshold: 0 }
+    );
+    observer.observe(container);
+
     // ── Animation Loop ──
     let animId: number;
     const animate = () => {
       animId = requestAnimationFrame(animate);
+      if (!isVisible) return; // Pause rAF logic when offscreen
 
       // Rotate scene slowly
       scene.rotation.y += 0.002;
       coreGroup.rotation.y += 0.01;
 
       // Pulse meshes
+      const currentCategory = activeCategoryRef.current;
       nodeMeshes.forEach(({ mesh, node }) => {
         const mat = mesh.material as THREE.MeshStandardMaterial;
-        const isDim = activeCategory !== 'all' && node.category !== activeCategory;
+        const isDim = currentCategory !== 'all' && node.category !== currentCategory;
 
         if (isDim) {
           mat.opacity = 0.25;
-          mat.transparent = true;
           mesh.scale.setScalar(0.65);
         } else {
           mat.opacity = 0.95;
@@ -224,13 +248,25 @@ export const UnifiedTechUniverse: React.FC = () => {
 
     return () => {
       cancelAnimationFrame(animId);
+      observer.disconnect();
       canvas.removeEventListener('pointermove', handlePointerMove);
       canvas.removeEventListener('pointerdown', handlePointerDown);
       window.removeEventListener('pointerup', handlePointerUp);
       window.removeEventListener('resize', handleResize);
+      
+      // Dispose geometry and material
+      wireGeo.dispose();
+      wireMat.dispose();
+      innerGeo.dispose();
+      innerMat.dispose();
+      sphereGeo.dispose();
+      nodeMeshes.forEach(({ mesh }) => {
+        (mesh.material as THREE.Material).dispose();
+      });
+      
       renderer.dispose();
     };
-  }, [activeCategory]);
+  }, []);
 
   const activeDetailNode = selectedNode || hoveredNode;
 
@@ -276,13 +312,27 @@ export const UnifiedTechUniverse: React.FC = () => {
 
       {/* 3D CANVAS SPATIAL VIEWPORT */}
       <div ref={containerRef} className="relative w-full h-[55vh] sm:h-[65vh] my-6 rounded-3xl bg-black/40 border border-white/10 backdrop-blur-xl overflow-hidden cursor-grab active:cursor-grabbing">
-        <canvas ref={canvasRef} className="w-full h-full block" />
+        {prefersReducedMotion ? (
+          <div className="w-full h-full p-6 sm:p-10 overflow-y-auto custom-scrollbar flex flex-wrap gap-4 items-center justify-center">
+            {TECH_NODES.filter(n => activeCategory === 'all' || n.category === activeCategory).map(node => (
+              <div key={node.id} className="bg-white/5 border border-white/10 p-4 rounded-xl flex flex-col gap-2 w-40 text-center items-center">
+                <span className="w-4 h-4 rounded-full" style={{ backgroundColor: node.color }} />
+                <span className="font-bold text-white text-sm">{node.name}</span>
+                <span className="text-xs text-gray-400">{node.project}</span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <canvas ref={canvasRef} className="w-full h-full block" />
+        )}
 
         {/* INSTRUCTION PILL */}
-        <div className="absolute top-4 left-4 pointer-events-none px-3 py-1.5 rounded-full bg-black/60 border border-white/10 text-[11px] font-mono text-gray-400 flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
-          <span>DRAG TO ROTATE | CLICK SPHERE NODE TO INSPECT ROLE</span>
-        </div>
+        {!prefersReducedMotion && (
+          <div className="absolute top-4 left-4 pointer-events-none px-3 py-1.5 rounded-full bg-black/60 border border-white/10 text-[11px] font-mono text-gray-400 flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+            <span>DRAG TO ROTATE | CLICK SPHERE NODE TO INSPECT ROLE</span>
+          </div>
+        )}
 
         {/* HOVER / SELECTION DETAIL PANEL CARD */}
         {activeDetailNode && (

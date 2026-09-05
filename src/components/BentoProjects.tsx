@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { resumeData } from '../data/resumeData';
 import { Project } from '../types/portfolio';
@@ -53,30 +53,31 @@ const getArchitecturePipeline = (projectId: string) => {
 };
 
 export const BentoProjects: React.FC<BentoProjectsProps> = ({ onOpenDemo }) => {
-  const [tiltStyles, setTiltStyles] = useState<{ [key: string]: { rotateX: number; rotateY: number; lightX: number; lightY: number } }>({});
+  const cardRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>, id: string) => {
-    const card = e.currentTarget;
+    const card = cardRefs.current[id];
+    if (!card) return;
     const rect = card.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
 
-    const rotateX = ((y - centerY) / centerY) * -6; // max 6 deg tilt
+    const rotateX = ((y - centerY) / centerY) * -6;
     const rotateY = ((x - centerX) / centerX) * 6;
 
-    setTiltStyles(prev => ({
-      ...prev,
-      [id]: { rotateX, rotateY, lightX: (x / rect.width) * 100, lightY: (y / rect.height) * 100 }
-    }));
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    card.style.setProperty('--light-x', `${(x / rect.width) * 100}%`);
+    card.style.setProperty('--light-y', `${(y / rect.height) * 100}%`);
   };
 
   const handleMouseLeave = (id: string) => {
-    setTiltStyles(prev => ({
-      ...prev,
-      [id]: { rotateX: 0, rotateY: 0, lightX: 50, lightY: 50 }
-    }));
+    const card = cardRefs.current[id];
+    if (!card) return;
+    card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+    card.style.setProperty('--light-x', '50%');
+    card.style.setProperty('--light-y', '50%');
   };
 
   return (
@@ -102,12 +103,12 @@ export const BentoProjects: React.FC<BentoProjectsProps> = ({ onOpenDemo }) => {
           const isBigCard = project.id === 'recoverOS' || project.id === 'skill-gap-analyzer';
           const colSpan = isBigCard ? 'lg:col-span-6' : 'lg:col-span-4';
           const pipeline = getArchitecturePipeline(project.id);
-          const currentTilt = tiltStyles[project.id] || { rotateX: 0, rotateY: 0, lightX: 50, lightY: 50 };
 
           return (
             <motion.div
               key={project.id}
               id={project.id}
+              ref={(el) => { cardRefs.current[project.id] = el; }}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -116,8 +117,9 @@ export const BentoProjects: React.FC<BentoProjectsProps> = ({ onOpenDemo }) => {
               onMouseLeave={() => handleMouseLeave(project.id)}
               style={{
                 perspective: 1000,
-                transform: `perspective(1000px) rotateX(${currentTilt.rotateX}deg) rotateY(${currentTilt.rotateY}deg)`,
                 transition: 'transform 0.15s ease-out',
+                ['--light-x' as string]: '50%',
+                ['--light-y' as string]: '50%',
               }}
               className={`p-6 sm:p-8 rounded-3xl glass-card relative flex flex-col justify-between overflow-hidden group ${colSpan}`}
             >
@@ -125,7 +127,7 @@ export const BentoProjects: React.FC<BentoProjectsProps> = ({ onOpenDemo }) => {
               <div
                 className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-3xl"
                 style={{
-                  background: `radial-gradient(circle at ${currentTilt.lightX}% ${currentTilt.lightY}%, rgba(255,255,255,0.06) 0%, transparent 60%)`,
+                  background: `radial-gradient(circle at var(--light-x, 50%) var(--light-y, 50%), rgba(255,255,255,0.06) 0%, transparent 60%)`,
                 }}
               />
 

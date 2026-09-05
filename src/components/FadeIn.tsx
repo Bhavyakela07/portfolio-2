@@ -9,6 +9,7 @@ interface FadeInProps {
   duration?: number;
   x?: number;
   y?: number;
+  blur?: number; // optional blur entrance (e.g. blur={4} for 4px)
   className?: string;
   as?: React.ElementType;
 }
@@ -19,6 +20,7 @@ export const FadeIn: React.FC<FadeInProps> = ({
   duration = 0.7,
   x = 0,
   y = 30,
+  blur = 0,
   className = '',
   as = 'div',
 }) => {
@@ -26,8 +28,18 @@ export const FadeIn: React.FC<FadeInProps> = ({
 
   return (
     <Component
-      initial={{ opacity: 0, x, y }}
-      whileInView={{ opacity: 1, x: 0, y: 0 }}
+      initial={{
+        opacity: 0,
+        x,
+        y,
+        filter: blur > 0 ? `blur(${blur}px)` : 'none',
+      }}
+      whileInView={{
+        opacity: 1,
+        x: 0,
+        y: 0,
+        filter: blur > 0 ? 'blur(0px)' : 'none',
+      }}
       viewport={{ once: true, margin: '50px', amount: 0 }}
       transition={{
         duration,

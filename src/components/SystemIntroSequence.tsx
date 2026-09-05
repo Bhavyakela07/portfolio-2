@@ -19,14 +19,25 @@ interface Particle {
   targetY?: number;
 }
 
+interface Node {
+  x: number;
+  y: number;
+}
+
 export const SystemIntroSequence: React.FC<SystemIntroSequenceProps> = ({ onComplete }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef<number>(0);
 
   const run = useCallback(() => {
+    // Check for prefers-reduced-motion
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      onComplete();
+      return;
+    }
+
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return;
 
     const dpr = Math.min(window.devicePixelRatio, 2);
@@ -38,37 +49,54 @@ export const SystemIntroSequence: React.FC<SystemIntroSequenceProps> = ({ onComp
     canvas.style.height = `${H}px`;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    // ── Phase Timing (Total ~4.2s) ──
-    const PHASE1_MS = 1400; // Phase 1: Handwritten "building..."
-    const HOLD1_MS = 300;   // Hold "building..."
-    const PHASE2_MS = 1300; // Phase 2: Particle transformation -> "INTELLIGENCE"
-    const HOLD2_MS = 300;   // Hold "INTELLIGENCE"
-    const PHASE3_MS = 1000; // Phase 3: 3D Tech Nodes Expansion (AI, ML, RAG, VISION, APIs, CLOUD)
-    const PHASE4_MS = 700;  // Phase 4: Collapse into "BHAVYA KELA" & Fade out
+    const isMobile = W < 768;
 
-    const cursiveText = 'building...';
-    const intelligenceText = 'INTELLIGENCE';
-    const nameText = 'BHAVYA KELA';
+    // ── Phase Timing (Total ~3.8s) ──
+    const STAGE1_MS = 600;  // 0 -> 600: Ambient
+    const STAGE2_MS = 1000; // 600 -> 1600: Handwriting
+    const STAGE3_MS = 1000; // 1600 -> 2600: Building Intelligence
+    const STAGE4_MS = 600;  // 2600 -> 3200: Network Formation
+    const STAGE5_MS = 400;  // 3200 -> 3600: Convergence
+    const STAGE6_MS = 200;  // 3600 -> 3800: Fade to Hero
 
-    const techTags = ['AI', 'ML', 'RAG', 'VISION', 'APIs', 'CLOUD'];
+    const colors = ['#818cf8', '#22d3ee', '#c084fc'];
+    const numParticles = isMobile ? Math.floor(30 + Math.random() * 10) : Math.floor(60 + Math.random() * 20);
 
-    const colors = ['#818cf8', '#22d3ee', '#c084fc', '#38bdf8', '#a855f7'];
+    // Initial background ambient particles
+    const particles: Particle[] = [];
+    for (let i = 0; i < numParticles; i++) {
+      particles.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.2,
+        vy: (Math.random() - 0.5) * 0.2,
+        size: 0.5 + Math.random() * 0.5,
+        alpha: 0.15 + Math.random() * 0.2,
+        color: colors[Math.floor(Math.random() * colors.length)],
+      });
+    }
 
     // ── Helper to sample text particle points ──
-    const getParticlePointsFromText = (text: string, fontStr: string, sampleGap = 4) => {
+    const getParticlePointsFromTexts = (text1: string, font1: string, text2: string, font2: string, sampleGap = 5) => {
       const pts: { x: number; y: number }[] = [];
       const offCanvas = document.createElement('canvas');
       offCanvas.width = Math.ceil(W * dpr);
       offCanvas.height = Math.ceil(H * dpr);
-      const offCtx = offCanvas.getContext('2d');
+      const offCtx = offCanvas.getContext('2d', { willReadFrequently: true });
       if (!offCtx) return pts;
 
       offCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
       offCtx.fillStyle = '#ffffff';
-      offCtx.font = fontStr;
       offCtx.textAlign = 'center';
       offCtx.textBaseline = 'middle';
-      offCtx.fillText(text, W / 2, H / 2);
+      
+      const gap = H * 0.05;
+
+      offCtx.font = font1;
+      offCtx.fillText(text1, W / 2, H / 2 - gap);
+
+      offCtx.font = font2;
+      offCtx.fillText(text2, W / 2, H / 2 + gap);
 
       try {
         const imgData = offCtx.getImageData(0, 0, offCanvas.width, offCanvas.height);
@@ -93,60 +121,88 @@ export const SystemIntroSequence: React.FC<SystemIntroSequenceProps> = ({ onComp
       return pts;
     };
 
-    const intelFontSize = Math.min(W * 0.1, 100);
-    const intelFont = `900 ${intelFontSize}px 'Kanit', sans-serif`;
-    const intelPts = getParticlePointsFromText(intelligenceText, intelFont, 5);
+    const cursiveText = 'building...';
+    
+    // Setup points for phase 3
+    const buildFont = `500 ${Math.min(W * 0.04, 30)}px 'Kanit', sans-serif`;
+    const intelFont = `900 ${Math.min(W * 0.08, 60)}px 'Kanit', sans-serif`;
+    const intelPts = getParticlePointsFromTexts('BUILDING', buildFont, 'INTELLIGENCE', intelFont, isMobile ? 7 : 5);
+    
+    // Assign random subset of text points to particles
+    const assignedIntelPts = particles.map(() => intelPts[Math.floor(Math.random() * intelPts.length)] || { x: W / 2, y: H / 2 });
 
-    const nameFontSize = Math.min(W * 0.11, 110);
-    const nameFont = `900 ${nameFontSize}px 'Kanit', sans-serif`;
-    const namePts = getParticlePointsFromText(nameText, nameFont, 5);
-
-    // Initial background ambient particles
-    const particles: Particle[] = [];
-    for (let i = 0; i < 180; i++) {
-      particles.push({
-        x: Math.random() * W,
-        y: Math.random() * H,
-        vx: (Math.random() - 0.5) * 0.6,
-        vy: (Math.random() - 0.5) * 0.6,
-        size: 1 + Math.random() * 2,
-        alpha: 0.2 + Math.random() * 0.5,
-        color: colors[Math.floor(Math.random() * colors.length)],
+    // Node locations for Phase 4 (Hexagon)
+    const nodes: Node[] = [];
+    const hexRadius = Math.min(W, H) * 0.25;
+    for (let i = 0; i < 6; i++) {
+      const angle = (i * Math.PI) / 3;
+      nodes.push({
+        x: W / 2 + Math.cos(angle) * hexRadius,
+        y: H / 2 + Math.sin(angle) * hexRadius
       });
     }
 
     let t0 = 0;
-    let currentPhase: 'phase1' | 'hold1' | 'phase2' | 'hold2' | 'phase3' | 'phase4' | 'done' = 'phase1';
-
+    
     const loop = (ts: number) => {
       if (!t0) t0 = ts;
-      const dt = ts - t0;
+      const elapsed = ts - t0;
 
+      // STAGE 6 handles background fading
+      let bgAlpha = 1;
+      if (elapsed > STAGE1_MS + STAGE2_MS + STAGE3_MS + STAGE4_MS + STAGE5_MS) {
+        const stage6Progress = Math.min((elapsed - (STAGE1_MS + STAGE2_MS + STAGE3_MS + STAGE4_MS + STAGE5_MS)) / STAGE6_MS, 1);
+        bgAlpha = 1 - stage6Progress;
+      }
+      
       ctx.clearRect(0, 0, W, H);
-      ctx.fillStyle = '#08080C';
-      ctx.fillRect(0, 0, W, H);
+      if (bgAlpha > 0) {
+        ctx.fillStyle = `rgba(8, 8, 12, ${bgAlpha})`;
+        ctx.fillRect(0, 0, W, H);
+      }
 
-      // Render ambient background drift particles
-      particles.forEach((p) => {
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < 0) p.x = W;
-        if (p.x > W) p.x = 0;
-        if (p.y < 0) p.y = H;
-        if (p.y > H) p.y = 0;
+      // -- STAGE 1: AMBIENT (0 -> 600)
+      if (elapsed <= STAGE1_MS) {
+        const progress = elapsed / STAGE1_MS;
+        particles.forEach((p) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0) p.x = W;
+          if (p.x > W) p.x = 0;
+          if (p.y < 0) p.y = H;
+          if (p.y > H) p.y = 0;
 
-        ctx.fillStyle = p.color;
-        ctx.globalAlpha = p.alpha;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
-      });
-      ctx.globalAlpha = 1;
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = p.alpha * progress;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        ctx.globalAlpha = 1;
+      }
+      // -- STAGE 2: HANDWRITING (600 -> 1600)
+      else if (elapsed <= STAGE1_MS + STAGE2_MS) {
+        const stage2Elapsed = elapsed - STAGE1_MS;
+        const progress = stage2Elapsed / STAGE2_MS;
+        
+        // Render particles
+        particles.forEach((p) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0) p.x = W;
+          if (p.x > W) p.x = 0;
+          if (p.y < 0) p.y = H;
+          if (p.y > H) p.y = 0;
 
-      // ───────── PHASE 1: Cursive "building..." ─────────
-      if (currentPhase === 'phase1') {
-        const progress = Math.min(dt / PHASE1_MS, 1);
-        const fontSz = Math.min(W * 0.09, 85);
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = p.alpha;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        ctx.globalAlpha = 1;
+
+        const fontSz = Math.min(W * 0.08, 70);
         ctx.font = `italic 600 ${fontSz}px Georgia, serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -154,184 +210,202 @@ export const SystemIntroSequence: React.FC<SystemIntroSequenceProps> = ({ onComp
         const charsToShow = Math.floor(progress * cursiveText.length);
         const partialStr = cursiveText.substring(0, charsToShow);
 
-        // Draw cursive text in soft purple-white gradient
-        ctx.fillStyle = 'rgba(215, 226, 234, 0.95)';
+        ctx.fillStyle = 'rgba(215, 226, 234, 0.9)';
         ctx.fillText(partialStr, W / 2, H / 2);
 
         // Glowing pen cursor tip
-        if (charsToShow > 0) {
+        if (charsToShow > 0 && charsToShow <= cursiveText.length) {
           const textW = ctx.measureText(partialStr).width;
-          const tipX = W / 2 - ctx.measureText(cursiveText).width / 2 + textW;
+          const fullW = ctx.measureText(cursiveText).width;
+          const tipX = W / 2 - fullW / 2 + textW;
           const tipY = H / 2;
 
-          const g = ctx.createRadialGradient(tipX, tipY, 0, tipX, tipY, 18);
+          const g = ctx.createRadialGradient(tipX, tipY, 0, tipX, tipY, 14);
           g.addColorStop(0, 'rgba(168, 85, 247, 0.9)');
-          g.addColorStop(0.5, 'rgba(56, 189, 248, 0.4)');
+          g.addColorStop(0.5, 'rgba(34, 211, 238, 0.4)');
           g.addColorStop(1, 'transparent');
           ctx.fillStyle = g;
           ctx.beginPath();
-          ctx.arc(tipX, tipY, 18, 0, Math.PI * 2);
+          ctx.arc(tipX, tipY, 14, 0, Math.PI * 2);
           ctx.fill();
-        }
 
-        if (progress >= 1) {
-          currentPhase = 'hold1';
-          t0 = ts;
+          // Tiny sparks
+          for (let s = 0; s < 2; s++) {
+            if (Math.random() > 0.5) {
+              ctx.fillStyle = '#fff';
+              ctx.globalAlpha = Math.random() * 0.8;
+              ctx.beginPath();
+              ctx.arc(tipX + (Math.random() - 0.5) * 10, tipY + (Math.random() - 0.5) * 10, 0.5 + Math.random(), 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
         }
+        ctx.globalAlpha = 1;
       }
-
-      // ───────── HOLD 1 ─────────
-      else if (currentPhase === 'hold1') {
-        const progress = Math.min((ts - t0) / HOLD1_MS, 1);
-        const fontSz = Math.min(W * 0.09, 85);
-        ctx.font = `italic 600 ${fontSz}px Georgia, serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillStyle = 'rgba(215, 226, 234, 0.95)';
-        ctx.fillText(cursiveText, W / 2, H / 2);
-
-        if (progress >= 1) {
-          currentPhase = 'phase2';
-          t0 = ts;
-          // Assign target positions for "INTELLIGENCE" particles
-          particles.forEach((p, idx) => {
-            const target = intelPts[idx % intelPts.length] || { x: W / 2, y: H / 2 };
-            p.targetX = target.x;
-            p.targetY = target.y;
-          });
-        }
-      }
-
-      // ───────── PHASE 2: Particles self-assemble into "INTELLIGENCE" ─────────
-      else if (currentPhase === 'phase2') {
-        const progress = Math.min((ts - t0) / PHASE2_MS, 1);
+      // -- STAGE 3: BUILDING INTELLIGENCE (1600 -> 2600)
+      else if (elapsed <= STAGE1_MS + STAGE2_MS + STAGE3_MS) {
+        const stage3Elapsed = elapsed - (STAGE1_MS + STAGE2_MS);
+        const progress = stage3Elapsed / STAGE3_MS;
         const ease = 1 - Math.pow(1 - progress, 3);
+        
+        // Cursive fade out (first 200ms)
+        if (stage3Elapsed < 200) {
+          const fadeProgress = stage3Elapsed / 200;
+          const fontSz = Math.min(W * 0.08, 70);
+          ctx.font = `italic 600 ${fontSz}px Georgia, serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillStyle = `rgba(215, 226, 234, ${0.9 * (1 - fadeProgress)})`;
+          ctx.fillText(cursiveText, W / 2, H / 2);
+        }
 
-        particles.forEach((p) => {
-          if (p.targetX !== undefined && p.targetY !== undefined) {
-            p.x += (p.targetX - p.x) * ease * 0.15;
-            p.y += (p.targetY - p.y) * ease * 0.15;
+        particles.forEach((p, idx) => {
+          const target = assignedIntelPts[idx];
+          if (target) {
+            p.x += (target.x - p.x) * ease * 0.1;
+            p.y += (target.y - p.y) * ease * 0.1;
           }
           ctx.fillStyle = p.color;
-          ctx.globalAlpha = Math.min(1, progress * 1.5);
+          ctx.globalAlpha = Math.min(1, p.alpha + progress);
           ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size * 1.2, 0, Math.PI * 2);
+          ctx.arc(p.x, p.y, p.size * 1.5, 0, Math.PI * 2);
           ctx.fill();
         });
+        
+        const gap = H * 0.05;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = `rgba(255, 255, 255, ${0.7 * progress})`;
+        
+        ctx.font = buildFont;
+        ctx.fillText('BUILDING', W / 2, H / 2 - gap);
+
+        ctx.font = intelFont;
+        ctx.fillText('INTELLIGENCE', W / 2, H / 2 + gap);
+
         ctx.globalAlpha = 1;
-
-        // Draw "INTELLIGENCE" title over particles
-        ctx.font = intelFont;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillStyle = `rgba(255, 255, 255, ${progress * 0.9})`;
-        ctx.fillText(intelligenceText, W / 2, H / 2);
-
-        if (progress >= 1) {
-          currentPhase = 'hold2';
-          t0 = ts;
-        }
       }
+      // -- STAGE 4: NETWORK FORMATION (2600 -> 3200)
+      else if (elapsed <= STAGE1_MS + STAGE2_MS + STAGE3_MS + STAGE4_MS) {
+        const stage4Elapsed = elapsed - (STAGE1_MS + STAGE2_MS + STAGE3_MS);
+        const progress = stage4Elapsed / STAGE4_MS;
+        const ease = 1 - Math.pow(1 - progress, 3);
 
-      // ───────── HOLD 2 ─────────
-      else if (currentPhase === 'hold2') {
-        const progress = Math.min((ts - t0) / HOLD2_MS, 1);
-        ctx.font = intelFont;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-        ctx.fillText(intelligenceText, W / 2, H / 2);
+        particles.forEach((p, idx) => {
+          const targetNode = nodes[idx % nodes.length];
+          // Adding some offset so they don't perfectly overlap
+          const tx = targetNode.x + Math.sin(idx) * 20;
+          const ty = targetNode.y + Math.cos(idx) * 20;
+          p.x += (tx - p.x) * ease * 0.15;
+          p.y += (ty - p.y) * ease * 0.15;
 
-        if (progress >= 1) {
-          currentPhase = 'phase3';
-          t0 = ts;
-        }
-      }
-
-      // ───────── PHASE 3: 3D Tech Nodes Expand Outward (AI, ML, RAG, VISION, APIs, CLOUD) ─────────
-      else if (currentPhase === 'phase3') {
-        const progress = Math.min((ts - t0) / PHASE3_MS, 1);
-        const ease = 1 - Math.pow(1 - progress, 2);
-
-        // Render expanding orbital tech nodes
-        const radius = 100 + ease * (Math.min(W, H) * 0.35);
-        ctx.font = `700 ${Math.min(W * 0.035, 24)}px 'Kanit', sans-serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-
-        techTags.forEach((tag, idx) => {
-          const angle = (idx / techTags.length) * Math.PI * 2 + progress * 0.5;
-          const nx = W / 2 + Math.cos(angle) * radius;
-          const ny = H / 2 + Math.sin(angle) * radius;
-
-          // Connecting laser line to center
-          ctx.strokeStyle = `rgba(168, 85, 247, ${0.4 * (1 - progress * 0.5)})`;
-          ctx.lineWidth = 1;
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = Math.max(0.3, 1 - progress * 0.5);
           ctx.beginPath();
-          ctx.moveTo(W / 2, H / 2);
-          ctx.lineTo(nx, ny);
-          ctx.stroke();
-
-          // Node pill glow
-          const nodeGlow = ctx.createRadialGradient(nx, ny, 0, nx, ny, 30);
-          nodeGlow.addColorStop(0, 'rgba(56, 189, 248, 0.4)');
-          nodeGlow.addColorStop(1, 'transparent');
-          ctx.fillStyle = nodeGlow;
-          ctx.beginPath();
-          ctx.arc(nx, ny, 30, 0, Math.PI * 2);
+          ctx.arc(p.x, p.y, p.size * 2, 0, Math.PI * 2);
           ctx.fill();
-
-          // Tag text
-          ctx.fillStyle = '#22d3ee';
-          ctx.fillText(tag, nx, ny);
         });
-
-        if (progress >= 1) {
-          currentPhase = 'phase4';
-          t0 = ts;
-          // Assign target points to collapse into "BHAVYA KELA"
-          particles.forEach((p, idx) => {
-            const target = namePts[idx % namePts.length] || { x: W / 2, y: H / 2 };
-            p.targetX = target.x;
-            p.targetY = target.y;
-          });
-        }
-      }
-
-      // ───────── PHASE 4: Collapse into "BHAVYA KELA" & Fade to Hero ─────────
-      else if (currentPhase === 'phase4') {
-        const progress = Math.min((ts - t0) / PHASE4_MS, 1);
-
-        particles.forEach((p) => {
-          if (p.targetX !== undefined && p.targetY !== undefined) {
-            p.x += (p.targetX - p.x) * 0.2;
-            p.y += (p.targetY - p.y) * 0.2;
+        
+        // Draw thin connections
+        ctx.globalAlpha = 0.15 * progress;
+        ctx.strokeStyle = '#22d3ee';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for (let i = 0; i < nodes.length; i++) {
+          for (let j = i + 1; j < nodes.length; j++) {
+             // Connect all nodes for a web effect
+             ctx.moveTo(nodes[i].x, nodes[i].y);
+             ctx.lineTo(nodes[j].x, nodes[j].y);
           }
-          ctx.fillStyle = '#a855f7';
-          ctx.globalAlpha = Math.max(0, 1 - progress);
+        }
+        ctx.stroke();
+        
+        // Node pulse
+        nodes.forEach((n) => {
+           const pulse = Math.sin(stage4Elapsed * 0.01) * 0.5 + 0.5;
+           const r = 4 + pulse * 2;
+           ctx.fillStyle = `rgba(192, 132, 252, ${0.5 + pulse * 0.3})`;
+           ctx.beginPath();
+           ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+           ctx.fill();
+        });
+        
+        ctx.globalAlpha = 1;
+      }
+      // -- STAGE 5: CONVERGENCE (3200 -> 3600)
+      else if (elapsed <= STAGE1_MS + STAGE2_MS + STAGE3_MS + STAGE4_MS + STAGE5_MS) {
+        const stage5Elapsed = elapsed - (STAGE1_MS + STAGE2_MS + STAGE3_MS + STAGE4_MS);
+        const progress = stage5Elapsed / STAGE5_MS;
+        const ease = progress * progress * progress; // Accelerating convergence
+        
+        particles.forEach((p) => {
+          p.x += (W / 2 - p.x) * ease;
+          p.y += (H / 2 - p.y) * ease;
+          
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = 1;
           ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.arc(p.x, p.y, p.size * 2, 0, Math.PI * 2);
           ctx.fill();
         });
-        ctx.globalAlpha = 1;
 
-        // Render "BHAVYA KELA" title burst
-        ctx.font = nameFont;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillStyle = `rgba(255, 255, 255, ${Math.max(0, 1 - progress * 1.2)})`;
-        ctx.fillText(nameText, W / 2, H / 2);
+        nodes.forEach((n) => {
+          n.x += (W / 2 - n.x) * ease;
+          n.y += (H / 2 - n.y) * ease;
+        });
 
-        if (progress >= 1) {
-          currentPhase = 'done';
-          onComplete();
-          return;
+        // Network connections
+        ctx.globalAlpha = 0.15 * (1 - progress);
+        ctx.strokeStyle = '#22d3ee';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for (let i = 0; i < nodes.length; i++) {
+          for (let j = i + 1; j < nodes.length; j++) {
+             ctx.moveTo(nodes[i].x, nodes[i].y);
+             ctx.lineTo(nodes[j].x, nodes[j].y);
+          }
         }
+        ctx.stroke();
+
+        // Central soft radial glow
+        ctx.globalAlpha = progress;
+        const g = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, 100);
+        g.addColorStop(0, 'rgba(168, 85, 247, 0.8)');
+        g.addColorStop(1, 'transparent');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(W/2, H/2, 100, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.globalAlpha = 1;
+      }
+      // -- STAGE 6: FADE TO HERO (3600 -> 3800)
+      else if (elapsed <= STAGE1_MS + STAGE2_MS + STAGE3_MS + STAGE4_MS + STAGE5_MS + STAGE6_MS) {
+        const stage6Elapsed = elapsed - (STAGE1_MS + STAGE2_MS + STAGE3_MS + STAGE4_MS + STAGE5_MS);
+        const progress = stage6Elapsed / STAGE6_MS;
+        const alpha = 1 - progress;
+        
+        ctx.globalAlpha = alpha;
+
+        // Bright central point
+        const g = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, 50 * alpha);
+        g.addColorStop(0, 'rgba(255, 255, 255, 1)');
+        g.addColorStop(0.2, 'rgba(168, 85, 247, 0.8)');
+        g.addColorStop(1, 'transparent');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(W/2, H/2, 100, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.globalAlpha = 1;
+      }
+      // -- DONE
+      else {
+        onComplete();
+        return;
       }
 
-      if (currentPhase !== 'done') {
-        animFrameRef.current = requestAnimationFrame(loop);
-      }
+      animFrameRef.current = requestAnimationFrame(loop);
     };
 
     animFrameRef.current = requestAnimationFrame(loop);
@@ -348,7 +422,7 @@ export const SystemIntroSequence: React.FC<SystemIntroSequenceProps> = ({ onComp
   return (
     <motion.div
       exit={{ opacity: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } }}
-      className="fixed inset-0 z-50 bg-[#08080C]"
+      className="fixed inset-0 z-50"
     >
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
     </motion.div>
