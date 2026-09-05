@@ -5,12 +5,12 @@ import { Project } from '../types/portfolio';
 import { Hero } from '../components/Hero';
 import { AboutSection } from '../components/AboutSection';
 import { BentoProjects } from '../components/BentoProjects';
-import { TechCenterFlow } from '../components/TechCenterFlow';
+import { UnifiedTechUniverse } from '../components/UnifiedTechUniverse';
 import { EducationSection } from '../components/Education';
 import { ContactFooter } from '../components/ContactFooter';
 import { CmdKModal } from '../components/CmdKModal';
 import { ProjectDemos } from '../components/ProjectDemos';
-import { CursiveIntro } from '../components/CursiveIntro';
+import { SystemIntroSequence } from '../components/SystemIntroSequence';
 import { ThreeCanvas } from '../components/ThreeCanvas';
 import { AnimatePresence } from 'framer-motion';
 
@@ -28,10 +28,10 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#0C0C0C] text-[#D7E2EA] relative selection:bg-emerald-500 selection:text-slate-950 overflow-x-clip">
       
-      {/* Cursive Handwriting Intro Reveal */}
+      {/* 4-Phase System Story Intro (human -> intelligence -> technology -> engineer) */}
       <AnimatePresence>
         {showIntro && (
-          <CursiveIntro onComplete={() => setShowIntro(false)} />
+          <SystemIntroSequence onComplete={() => setShowIntro(false)} />
         )}
       </AnimatePresence>
 
@@ -51,8 +51,8 @@ export default function Home() {
         onOpenDemo={(project) => setActiveDemoProject(project)}
       />
 
-      {/* 4. 16-Node TechCenterFlow (React Bits Pro Center Flow Tech Stack) */}
-      <TechCenterFlow />
+      {/* 4. Single Consolidated WebGL 3D Tech Spatial Universe (22 Tech Nodes) */}
+      <UnifiedTechUniverse />
 
       {/* 5. Education Background */}
       <EducationSection />
