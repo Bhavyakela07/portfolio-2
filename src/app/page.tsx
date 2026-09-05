@@ -6,6 +6,7 @@ import { Hero } from '../components/Hero';
 import { AboutSection } from '../components/AboutSection';
 import { BentoProjects } from '../components/BentoProjects';
 import { UnifiedTechUniverse } from '../components/UnifiedTechUniverse';
+import { TechCenterFlow } from '../components/TechCenterFlow';
 import { EducationSection } from '../components/Education';
 import { ContactFooter } from '../components/ContactFooter';
 import { CmdKModal } from '../components/CmdKModal';
@@ -53,6 +54,9 @@ export default function Home() {
 
       {/* 4. Single Consolidated WebGL 3D Tech Spatial Universe (22 Tech Nodes) */}
       <UnifiedTechUniverse />
+
+      {/* Radial System Architecture Flow Diagram (AI Engine Core & 16 Connected Nodes) */}
+      <TechCenterFlow />
 
       {/* 5. Education Background */}
       <EducationSection />
