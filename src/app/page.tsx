@@ -5,7 +5,6 @@ import { Project } from '../types/portfolio';
 import { Hero } from '../components/Hero';
 import { AboutSection } from '../components/AboutSection';
 import { BentoProjects } from '../components/BentoProjects';
-import { UnifiedTechUniverse } from '../components/UnifiedTechUniverse';
 import { TechCenterFlow } from '../components/TechCenterFlow';
 import { EducationSection } from '../components/Education';
 import { ContactFooter } from '../components/ContactFooter';
@@ -52,13 +51,10 @@ export default function Home() {
         onOpenDemo={(project) => setActiveDemoProject(project)}
       />
 
-      {/* 4. Single Consolidated WebGL 3D Tech Spatial Universe (22 Tech Nodes) */}
-      <UnifiedTechUniverse />
-
       {/* Radial System Architecture Flow Diagram (AI Engine Core & 16 Connected Nodes) */}
       <TechCenterFlow />
 
-      {/* 5. Education Background */}
+      {/* 4. Education Background */}
       <EducationSection />
 
       {/* 6. Contact & Footer */}
