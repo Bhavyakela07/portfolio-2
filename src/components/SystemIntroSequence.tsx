@@ -148,18 +148,9 @@ export const SystemIntroSequence: React.FC<SystemIntroSequenceProps> = ({ onComp
       if (!t0) t0 = ts;
       const elapsed = ts - t0;
 
-      // STAGE 6 handles background fading
-      let bgAlpha = 1;
-      if (elapsed > STAGE1_MS + STAGE2_MS + STAGE3_MS + STAGE4_MS + STAGE5_MS) {
-        const stage6Progress = Math.min((elapsed - (STAGE1_MS + STAGE2_MS + STAGE3_MS + STAGE4_MS + STAGE5_MS)) / STAGE6_MS, 1);
-        bgAlpha = 1 - stage6Progress;
-      }
-      
       ctx.clearRect(0, 0, W, H);
-      if (bgAlpha > 0) {
-        ctx.fillStyle = `rgba(8, 8, 12, ${bgAlpha})`;
-        ctx.fillRect(0, 0, W, H);
-      }
+      ctx.fillStyle = '#08080C';
+      ctx.fillRect(0, 0, W, H);
 
       // -- STAGE 1: AMBIENT (0 -> 600)
       if (elapsed <= STAGE1_MS) {
@@ -421,8 +412,8 @@ export const SystemIntroSequence: React.FC<SystemIntroSequenceProps> = ({ onComp
 
   return (
     <motion.div
-      exit={{ opacity: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } }}
-      className="fixed inset-0 z-50"
+      exit={{ opacity: 0, transition: { duration: 0.35, ease: [0.25, 0.1, 0.25, 1] } }}
+      className="fixed inset-0 z-50 bg-[#08080C]"
     >
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
     </motion.div>
