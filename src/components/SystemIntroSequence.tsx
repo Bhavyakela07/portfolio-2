@@ -23,40 +23,53 @@ interface TechTagNode {
   name: string;
   x: number;
   y: number;
-  targetX: number;
-  targetY: number;
+  baseAngle: number;
   color: string;
 }
-
-// Whisper-quiet audio click feedback for typing character appearance
-const playSoftTypingClick = () => {
-  try {
-    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-    if (!AudioContextClass) return;
-    const ctx = new AudioContextClass();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(750, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(250, ctx.currentTime + 0.012);
-    gain.gain.setValueAtTime(0.012, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.012);
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + 0.012);
-  } catch {
-    // Ignore audio context autoplay restriction gracefully
-  }
-};
 
 export const SystemIntroSequence: React.FC<SystemIntroSequenceProps> = ({ onComplete }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef<number>(0);
   const lastAudioCharRef = useRef<number>(-1);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+
+  // Initialize or resume Web Audio Context for typing sound
+  const triggerSoftTypingSound = useCallback(() => {
+    try {
+      if (!audioCtxRef.current) {
+        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+        if (AudioContextClass) {
+          audioCtxRef.current = new AudioContextClass();
+        }
+      }
+      const ctx = audioCtxRef.current;
+      if (!ctx) return;
+
+      if (ctx.state === 'suspended') {
+        ctx.resume().catch(() => {});
+      }
+
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(650, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.02);
+      
+      gain.gain.setValueAtTime(0.06, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.02);
+      
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      
+      osc.start();
+      osc.stop(ctx.currentTime + 0.02);
+    } catch {
+      // Graceful fallback if audio is restricted by browser policy
+    }
+  }, []);
 
   const run = useCallback(() => {
-    // Check for prefers-reduced-motion accessibility setting
+    // Accessibility check: prefers-reduced-motion
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       onComplete();
       return;
@@ -78,14 +91,13 @@ export const SystemIntroSequence: React.FC<SystemIntroSequenceProps> = ({ onComp
 
     const isMobile = W < 768;
 
-    // ── Phase Timing (Total ~7.0s) ──
+    // ── Timings (Total ~7.0 seconds) ──
     const STAGE1_MS = 800;  // 0.0 -> 0.8s: Dark Ambient space
     const STAGE2_MS = 1500; // 0.8 -> 2.3s: "building..." character writing
     const STAGE3_MS = 1200; // 2.3 -> 3.5s: "BUILDING INTELLIGENCE" morphing
-    const STAGE4_MS = 1500; // 3.5 -> 5.0s: AI/ML Tech Stack Materializes
+    const STAGE4_MS = 1500; // 3.5 -> 5.0s: AI/ML Tech Stack Materialization
     const STAGE5_MS = 1200; // 5.0 -> 6.2s: Stack Mixes & Interconnects
     const STAGE6_MS = 800;  // 6.2 -> 7.0s: Convergence into central orb
-    const STAGE7_MS = 200;  // 7.0s+: Trigger completion crossfade
 
     const T_STAGE1 = STAGE1_MS;
     const T_STAGE2 = T_STAGE1 + STAGE2_MS;
@@ -95,7 +107,7 @@ export const SystemIntroSequence: React.FC<SystemIntroSequenceProps> = ({ onComp
     const T_STAGE6 = T_STAGE5 + STAGE6_MS;
 
     const colors = ['#818cf8', '#22d3ee', '#c084fc', '#a855f7'];
-    const numParticles = isMobile ? 40 : 100;
+    const numParticles = isMobile ? 40 : 90;
 
     // Ambient background particles
     const particles: Particle[] = [];
@@ -103,8 +115,8 @@ export const SystemIntroSequence: React.FC<SystemIntroSequenceProps> = ({ onComp
       particles.push({
         x: Math.random() * W,
         y: Math.random() * H,
-        vx: (Math.random() - 0.5) * 0.2,
-        vy: (Math.random() - 0.5) * 0.2,
+        vx: (Math.random() - 0.5) * 0.25,
+        vy: (Math.random() - 0.5) * 0.25,
         size: 0.6 + Math.random() * 0.8,
         alpha: 0.15 + Math.random() * 0.25,
         color: colors[Math.floor(Math.random() * colors.length)],
@@ -160,24 +172,21 @@ export const SystemIntroSequence: React.FC<SystemIntroSequenceProps> = ({ onComp
     const buildFont = `500 ${Math.min(W * 0.045, 34)}px 'Kanit', sans-serif`;
     const intelFont = `900 ${Math.min(W * 0.085, 68)}px 'Kanit', sans-serif`;
     const intelPts = getParticlePointsFromTexts('BUILDING', buildFont, 'INTELLIGENCE', intelFont, isMobile ? 7 : 5);
-    const assignedIntelPts = particles.map(() => intelPts[Math.floor(Math.random() * intelPts.length)] || { x: W / 2, y: H / 2 });
+    const assignedIntelPts = particles.map((_, idx) => intelPts[idx % intelPts.length] || { x: W / 2, y: H / 2 });
 
     // Technologies represented in Bhavya's portfolio
     const fullTechList = isMobile
       ? ['GROQ', 'RAG', 'YOLOv8', 'GEMINI', 'FASTAPI', 'REACT']
       : ['GROQ', 'LLM', 'RAG', 'QDRANT', 'YOLOv8', 'GEMINI', 'XGBOOST', 'SPACY', 'FASTAPI', 'REACT', 'TYPESCRIPT', 'POSTGRESQL', 'DOCKER', 'AWS'];
 
-    // Position tech tag nodes in orbital spatial layout
+    // Position tech tag nodes mathematically in continuous orbital space
     const techNodes: TechTagNode[] = fullTechList.map((name, idx) => {
-      const angle = (idx / fullTechList.length) * Math.PI * 2;
-      const radiusX = Math.min(W, H) * (isMobile ? 0.32 : 0.36);
-      const radiusY = Math.min(W, H) * (isMobile ? 0.28 : 0.28);
+      const baseAngle = (idx / fullTechList.length) * Math.PI * 2;
       return {
         name,
         x: W / 2,
         y: H / 2,
-        targetX: W / 2 + Math.cos(angle) * radiusX,
-        targetY: H / 2 + Math.sin(angle) * radiusY,
+        baseAngle,
         color: colors[idx % colors.length],
       };
     });
@@ -246,10 +255,10 @@ export const SystemIntroSequence: React.FC<SystemIntroSequenceProps> = ({ onComp
         const charsToShow = Math.floor(writeProgress * cursiveText.length);
         const partialStr = cursiveText.substring(0, charsToShow);
 
-        // Trigger whisper-quiet audio tick on new character reveal
+        // Trigger typing sound on new character reveal
         if (charsToShow > 0 && charsToShow !== lastAudioCharRef.current) {
           lastAudioCharRef.current = charsToShow;
-          playSoftTypingClick();
+          triggerSoftTypingSound();
         }
 
         ctx.fillStyle = 'rgba(215, 226, 234, 0.95)';
@@ -334,10 +343,10 @@ export const SystemIntroSequence: React.FC<SystemIntroSequenceProps> = ({ onComp
         const progress = Math.min(1, stage4Elapsed / STAGE4_MS);
         const ease = 1 - Math.pow(1 - progress, 3);
 
-        // Particle cloud disperses slowly into space
+        // Ambient particles disperse into space smoothly
         particles.forEach((p) => {
-          p.x += p.vx * 1.5;
-          p.y += p.vy * 1.5;
+          p.x += p.vx * 1.2;
+          p.y += p.vy * 1.2;
           ctx.fillStyle = p.color;
           ctx.globalAlpha = 0.25;
           ctx.beginPath();
@@ -345,16 +354,21 @@ export const SystemIntroSequence: React.FC<SystemIntroSequenceProps> = ({ onComp
           ctx.fill();
         });
 
-        // Tech tag nodes float outward to spatial positions
+        // Continuous mathematical expansion without sudden snapping
+        const maxRadiusX = Math.min(W, H) * (isMobile ? 0.32 : 0.36);
+        const maxRadiusY = Math.min(W, H) * (isMobile ? 0.28 : 0.28);
+        const curRadiusX = maxRadiusX * ease;
+        const curRadiusY = maxRadiusY * ease;
+
         ctx.font = `700 ${Math.min(W * 0.03, isMobile ? 13 : 17)}px 'Kanit', sans-serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
         techNodes.forEach((node) => {
-          node.x += (node.targetX - node.x) * ease * 0.15;
-          node.y += (node.targetY - node.y) * ease * 0.15;
+          node.x = W / 2 + Math.cos(node.baseAngle) * curRadiusX;
+          node.y = H / 2 + Math.sin(node.baseAngle) * curRadiusY;
 
-          // Node pill glow
+          // Radial glow per node
           const g = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, 24);
           g.addColorStop(0, 'rgba(56, 189, 248, 0.35)');
           g.addColorStop(1, 'transparent');
@@ -363,7 +377,7 @@ export const SystemIntroSequence: React.FC<SystemIntroSequenceProps> = ({ onComp
           ctx.arc(node.x, node.y, 24, 0, Math.PI * 2);
           ctx.fill();
 
-          // Node label text
+          // Node text label
           ctx.fillStyle = node.color;
           ctx.globalAlpha = Math.min(1, progress * 1.2);
           ctx.fillText(node.name, node.x, node.y);
@@ -377,30 +391,31 @@ export const SystemIntroSequence: React.FC<SystemIntroSequenceProps> = ({ onComp
         const stage5Elapsed = elapsed - T_STAGE4;
         const progress = Math.min(1, stage5Elapsed / STAGE5_MS);
 
-        // Gentle orbital drift
+        const radiusX = Math.min(W, H) * (isMobile ? 0.32 : 0.36);
+        const radiusY = Math.min(W, H) * (isMobile ? 0.28 : 0.28);
+
+        // Continuous orbital rotation (smooth drift from Stage 4)
         techNodes.forEach((node, idx) => {
-          const orbitSpeed = (idx % 2 === 0 ? 1 : -1) * 0.0015;
-          const currentAngle = Math.atan2(node.y - H / 2, node.x - W / 2) + orbitSpeed;
-          const radiusX = Math.min(W, H) * (isMobile ? 0.32 : 0.36);
-          const radiusY = Math.min(W, H) * (isMobile ? 0.28 : 0.28);
-          node.x = W / 2 + Math.cos(currentAngle) * radiusX;
-          node.y = H / 2 + Math.sin(currentAngle) * radiusY;
+          const orbitDirection = idx % 2 === 0 ? 1 : -1;
+          const orbitAngle = node.baseAngle + orbitDirection * (stage5Elapsed * 0.001);
+          node.x = W / 2 + Math.cos(orbitAngle) * radiusX;
+          node.y = H / 2 + Math.sin(orbitAngle) * radiusY;
         });
 
-        // Draw connections between related tech nodes
+        // Laser connection lines between nodes
         ctx.lineWidth = 1;
         connections.forEach(([i, j]) => {
           const n1 = techNodes[i];
           const n2 = techNodes[j];
           if (n1 && n2) {
-            ctx.strokeStyle = `rgba(34, 211, 238, ${0.25 * progress})`;
+            ctx.strokeStyle = `rgba(34, 211, 238, ${0.3 * progress})`;
             ctx.beginPath();
             ctx.moveTo(n1.x, n1.y);
             ctx.lineTo(n2.x, n2.y);
             ctx.stroke();
 
-            // Signals traveling along connections
-            const signalPos = (stage5Elapsed * 0.001 + (i + j) * 0.1) % 1;
+            // Traveling signals
+            const signalPos = (stage5Elapsed * 0.0012 + (i + j) * 0.1) % 1;
             const sx = n1.x + (n2.x - n1.x) * signalPos;
             const sy = n1.y + (n2.y - n1.y) * signalPos;
             ctx.fillStyle = '#22d3ee';
@@ -438,13 +453,20 @@ export const SystemIntroSequence: React.FC<SystemIntroSequenceProps> = ({ onComp
         const progress = Math.min(1, stage6Elapsed / STAGE6_MS);
         const ease = progress * progress * progress;
 
-        // Tech nodes collapse to center
-        techNodes.forEach((node) => {
-          node.x += (W / 2 - node.x) * ease * 0.35;
-          node.y += (H / 2 - node.y) * ease * 0.35;
+        const startRadiusX = Math.min(W, H) * (isMobile ? 0.32 : 0.36);
+        const startRadiusY = Math.min(W, H) * (isMobile ? 0.28 : 0.28);
+        const curRadiusX = startRadiusX * (1 - ease);
+        const curRadiusY = startRadiusY * (1 - ease);
+
+        // Tech nodes contract seamlessly back to center
+        techNodes.forEach((node, idx) => {
+          const orbitDirection = idx % 2 === 0 ? 1 : -1;
+          const orbitAngle = node.baseAngle + orbitDirection * (STAGE5_MS * 0.001 + stage6Elapsed * 0.001);
+          node.x = W / 2 + Math.cos(orbitAngle) * curRadiusX;
+          node.y = H / 2 + Math.sin(orbitAngle) * curRadiusY;
         });
 
-        // Connections collapse
+        // Laser connections collapse
         ctx.lineWidth = 1;
         ctx.globalAlpha = 0.25 * (1 - progress);
         connections.forEach(([i, j]) => {
@@ -459,12 +481,12 @@ export const SystemIntroSequence: React.FC<SystemIntroSequenceProps> = ({ onComp
           }
         });
 
-        // Glowing node points collapse
+        // Tech nodes collapse
         techNodes.forEach((node) => {
           ctx.fillStyle = node.color;
           ctx.globalAlpha = 1 - progress * 0.7;
           ctx.beginPath();
-          ctx.arc(node.x, node.y, 3 * (1 - progress * 0.5), 0, Math.PI * 2);
+          ctx.arc(node.x, node.y, Math.max(1, 3 * (1 - progress)), 0, Math.PI * 2);
           ctx.fill();
         });
 
@@ -492,7 +514,7 @@ export const SystemIntroSequence: React.FC<SystemIntroSequenceProps> = ({ onComp
     };
 
     animFrameRef.current = requestAnimationFrame(loop);
-  }, [onComplete]);
+  }, [onComplete, triggerSoftTypingSound]);
 
   useEffect(() => {
     const timer = setTimeout(() => run(), 50);
@@ -505,13 +527,17 @@ export const SystemIntroSequence: React.FC<SystemIntroSequenceProps> = ({ onComp
   return (
     <motion.div
       exit={{ opacity: 0, transition: { duration: 0.45, ease: [0.25, 0.1, 0.25, 1] } }}
+      onClick={() => triggerSoftTypingSound()}
       className="fixed inset-0 z-50 bg-[#08080C]"
     >
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
       
       {/* Optional Skip Button for Instant Portfolio Access */}
       <button
-        onClick={onComplete}
+        onClick={(e) => {
+          e.stopPropagation();
+          onComplete();
+        }}
         className="absolute top-6 right-6 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-slate-800 text-xs font-mono text-slate-400 hover:text-white hover:border-slate-700 transition-all z-50 flex items-center gap-1.5 group cursor-pointer"
       >
         <span>Skip Intro</span>
