@@ -20,7 +20,7 @@ const resumeMain16TechStack: CenterFlowTechItem[] = [
     name: 'Groq (Llama 3)',
     category: 'GenAI & RAG',
     icon: Cpu,
-    metric: '18x LPU Speedup',
+    metric: 'LPU Inference Speedup',
     angle: 0,
     radiusPercent: 42,
   },
@@ -29,7 +29,7 @@ const resumeMain16TechStack: CenterFlowTechItem[] = [
     name: 'Qdrant Vector DB',
     category: 'GenAI & RAG',
     icon: Database,
-    metric: '90% Precision',
+    metric: 'Vector Embedding Search',
     angle: 22.5,
     radiusPercent: 32,
   },
@@ -38,7 +38,7 @@ const resumeMain16TechStack: CenterFlowTechItem[] = [
     name: 'YOLOv8',
     category: 'Computer Vision',
     icon: Eye,
-    metric: '< 1s Latency',
+    metric: 'Real-Time Vision Pipeline',
     angle: 45,
     radiusPercent: 42,
   },
@@ -53,10 +53,10 @@ const resumeMain16TechStack: CenterFlowTechItem[] = [
   },
   {
     id: 'fastapi',
-    name: 'FastAPI REST',
+    name: 'FastAPI',
     category: 'Backend APIs',
     icon: Server,
-    metric: 'Sub-second REST',
+    metric: 'Async REST Microservices',
     angle: 90,
     radiusPercent: 42,
   },
@@ -65,25 +65,25 @@ const resumeMain16TechStack: CenterFlowTechItem[] = [
     name: 'Node.js & Express',
     category: 'Backend APIs',
     icon: Terminal,
-    metric: 'Scalable Routes',
+    metric: 'Event-Driven Server Runtime',
     angle: 112.5,
     radiusPercent: 32,
   },
   {
     id: 'react',
-    name: 'React 19 & TS',
+    name: 'React 19',
     category: 'Frontend UI',
     icon: Layers,
-    metric: '60 FPS UI',
+    metric: 'Component State & Hooks',
     angle: 135,
     radiusPercent: 42,
   },
   {
     id: 'tailwind',
-    name: 'Tailwind CSS v4',
+    name: 'Tailwind CSS',
     category: 'Frontend UI',
     icon: Code,
-    metric: 'Glassmorphism UI',
+    metric: 'Utility Dark Styling',
     angle: 157.5,
     radiusPercent: 32,
   },
@@ -92,25 +92,25 @@ const resumeMain16TechStack: CenterFlowTechItem[] = [
     name: 'Framer Motion',
     category: 'Frontend UI',
     icon: Activity,
-    metric: 'Spring Physics',
+    metric: 'Layout Animations',
     angle: 180,
     radiusPercent: 42,
   },
   {
     id: 'postgres',
-    name: 'PostgreSQL DB',
+    name: 'PostgreSQL',
     category: 'Databases',
     icon: Database,
-    metric: 'Audit Ledger',
+    metric: 'ACID Ledger Storage',
     angle: 202.5,
     radiusPercent: 32,
   },
   {
-    id: 'mongodb',
-    name: 'MongoDB',
-    category: 'Databases',
-    icon: Database,
-    metric: 'NoSQL Storage',
+    id: 'next',
+    name: 'Next.js 14',
+    category: 'Frontend UI',
+    icon: Layers,
+    metric: 'App Router & SSR',
     angle: 225,
     radiusPercent: 42,
   },
@@ -119,7 +119,7 @@ const resumeMain16TechStack: CenterFlowTechItem[] = [
     name: 'XGBoost ML',
     category: 'ML & Data',
     icon: BrainCircuit,
-    metric: 'Calibrated ML',
+    metric: 'Anomaly Scoring Model',
     angle: 247.5,
     radiusPercent: 32,
   },
@@ -128,16 +128,16 @@ const resumeMain16TechStack: CenterFlowTechItem[] = [
     name: 'Gemini API',
     category: 'GenAI & RAG',
     icon: Sparkles,
-    metric: '100% JSON Verdicts',
+    metric: 'Multi-Modal Reasoning',
     angle: 270,
     radiusPercent: 42,
   },
   {
     id: 'spacy',
-    name: 'SpaCy NLP',
+    name: 'spaCy NLP',
     category: 'GenAI & RAG',
     icon: FileCode,
-    metric: 'Tokenized NLP',
+    metric: 'Entity Extraction Pipeline',
     angle: 292.5,
     radiusPercent: 32,
   },
@@ -146,16 +146,16 @@ const resumeMain16TechStack: CenterFlowTechItem[] = [
     name: 'Docker',
     category: 'Cloud & Tools',
     icon: Box,
-    metric: 'Containers',
+    metric: 'Containerized Services',
     angle: 315,
     radiusPercent: 42,
   },
   {
     id: 'aws',
-    name: 'AWS (EC2/Lambda)',
+    name: 'AWS Cloud',
     category: 'Cloud & Tools',
     icon: Cloud,
-    metric: 'Cloud Host',
+    metric: 'EC2 & Cloud Deployments',
     angle: 337.5,
     radiusPercent: 32,
   }
@@ -171,13 +171,13 @@ export const TechCenterFlow: React.FC = () => {
       <div className="text-center mb-12">
         <span className="text-xs font-mono font-bold tracking-widest text-cyan-400 uppercase bg-cyan-950/60 px-3.5 py-1 rounded-full border border-cyan-800/60 inline-flex items-center gap-1.5">
           <Workflow className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
-          FULL-WIDTH CENTER FLOW TECH STACK
+          TECH STACK / 02
         </span>
         <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-100 mt-3 tracking-tight">
-          Core 16 Resume Technologies
+          Languages, Frameworks &amp; Core Architecture
         </h2>
         <p className="text-sm text-slate-400 mt-2 max-w-2xl mx-auto font-mono">
-          Light beams flowing from all 16 core technologies towards the central AI Engine hub. Hover any node to highlight metrics.
+          Core technologies engineered into end-to-end intelligent applications &mdash; connecting AI models with APIs, vector storage, and modern interfaces.
         </p>
       </div>
 
@@ -244,57 +244,57 @@ export const TechCenterFlow: React.FC = () => {
           })}
         </svg>
 
-        {/* Central Hub Node */}
+        {/* Central Core AI Engine Hub */}
         <motion.div
           animate={{
             boxShadow: [
-              '0 0 30px rgba(99, 102, 241, 0.35)',
-              '0 0 55px rgba(6, 182, 212, 0.55)',
-              '0 0 30px rgba(99, 102, 241, 0.35)',
+              '0 0 30px rgba(99, 102, 241, 0.4)',
+              '0 0 60px rgba(6, 182, 212, 0.6)',
+              '0 0 30px rgba(99, 102, 241, 0.4)',
             ],
           }}
           transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-          className="relative z-20 w-32 h-32 sm:w-36 sm:h-36 rounded-3xl bg-gradient-to-br from-indigo-950 via-slate-950 to-purple-950 border-2 border-indigo-500/80 flex flex-col items-center justify-center p-3 text-center shadow-2xl backdrop-blur-xl group cursor-pointer"
+          className="relative z-20 w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-gradient-to-br from-indigo-950 via-slate-950 to-cyan-950 border-2 border-cyan-400/60 flex flex-col items-center justify-center p-3 text-center shadow-2xl backdrop-blur-md"
         >
-          <div className="absolute inset-0 rounded-3xl bg-indigo-500/10 blur-xl group-hover:bg-indigo-500/25 transition-all pointer-events-none" />
-          <Layers className="w-10 h-10 text-cyan-400 animate-pulse mb-1" />
-          <span className="text-xs sm:text-sm font-mono font-extrabold text-slate-100 tracking-tight leading-tight">
-            AI ENGINE CORE
+          <BrainCircuit className="w-8 h-8 sm:w-10 sm:h-10 text-cyan-400 mb-1 animate-pulse" />
+          <span className="text-xs sm:text-sm font-extrabold text-white tracking-wider uppercase font-mono">
+            AI ENGINE
           </span>
-          <span className="text-[9px] font-mono text-indigo-300 mt-0.5">UNIFIED STACK</span>
+          <span className="text-[10px] text-cyan-300 font-mono tracking-tight">
+            System Core
+          </span>
         </motion.div>
 
-        {/* All 16 Surrounding Tech Nodes (Fixed positioning wrapper to prevent right shift on click/hover!) */}
+        {/* 16 Radial Tech Nodes */}
         {resumeMain16TechStack.map((tech) => {
           const isHovered = hoveredTech?.id === tech.id;
-          const IconComp = tech.icon;
-
           const rad = (tech.angle - 90) * (Math.PI / 180);
+          
           const rx = tech.radiusPercent * 1.1;
           const ry = tech.radiusPercent * 0.9;
-          const left = 50 + rx * Math.cos(rad);
-          const top = 50 + ry * Math.sin(rad);
+          const posX = 50 + rx * Math.cos(rad);
+          const posY = 50 + ry * Math.sin(rad);
+
+          const IconComp = tech.icon;
 
           return (
             <div
               key={tech.id}
               style={{
-                left: `${left}%`,
-                top: `${top}%`,
-                position: 'absolute',
+                left: `${posX}%`,
+                top: `${posY}%`,
                 transform: 'translate(-50%, -50%)',
-                zIndex: isHovered ? 40 : 30,
               }}
+              className="absolute z-30 cursor-pointer"
+              onMouseEnter={() => setHoveredTech(tech)}
+              onMouseLeave={() => setHoveredTech(null)}
             >
               <motion.div
-                onMouseEnter={() => setHoveredTech(tech)}
-                onMouseLeave={() => setHoveredTech(null)}
-                whileHover={{ scale: 1.08 }}
-                whileTap={{ scale: 0.95 }}
-                className={`relative cursor-pointer flex items-center gap-2 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-2xl transition-all duration-150 shadow-xl ${
+                whileHover={{ scale: 1.1 }}
+                className={`px-3 py-2 sm:px-4 sm:py-2.5 rounded-2xl border transition-all duration-300 flex items-center gap-2 shadow-lg ${
                   isHovered
-                    ? 'bg-indigo-600 border-2 border-cyan-400 text-white font-bold shadow-indigo-600/60'
-                    : 'bg-slate-900/95 backdrop-blur-md border border-slate-800 text-slate-300 hover:border-indigo-500/60 hover:text-white'
+                    ? 'bg-cyan-950 text-white border-cyan-400 shadow-cyan-500/30'
+                    : 'bg-slate-950/90 text-slate-300 border-indigo-900/60 hover:border-indigo-400'
                 }`}
               >
                 {/* Glowing Dot */}
@@ -321,19 +321,19 @@ export const TechCenterFlow: React.FC = () => {
 
       </div>
 
-      {/* Additional Languages & Specialized Tools Section (Complementing the 16 Center Flow Nodes) */}
+      {/* Core Languages & Infrastructure Strip */}
       <div className="mt-10 p-6 rounded-3xl bg-slate-950/80 border border-slate-800 text-center space-y-4">
         <div className="text-xs font-mono font-bold text-cyan-400 uppercase tracking-widest">
-          ADDITIONAL PROGRAMMING LANGUAGES & TOOLING
+          CORE PROGRAMMING LANGUAGES &amp; INFRASTRUCTURE
         </div>
         <div className="flex flex-wrap justify-center gap-2 max-w-4xl mx-auto">
           {[
-            "Python 3.11", "C++", "Java", "JavaScript (ES6+)", "TypeScript", "SQL",
-            "Streamlit", "REST API Architecture", "Webhooks", "Git", "GitHub", "PyTorch", "Isotonic Calibration"
+            "Python 3.11", "TypeScript", "JavaScript (ES6+)", "SQL", "C++", "Java",
+            "REST API Architecture", "Docker", "AWS Cloud", "Git & GitHub", "PyTorch"
           ].map((item) => (
             <span
               key={item}
-              className="px-3.5 py-1.5 rounded-xl bg-slate-900/90 text-slate-200 text-xs font-mono border border-slate-800 shadow-sm hover:border-emerald-400/50 transition-colors"
+              className="px-3.5 py-1.5 rounded-xl bg-slate-900/90 text-slate-200 text-xs font-mono border border-slate-800 shadow-sm hover:border-cyan-400/50 transition-colors"
             >
               {item}
             </span>
