@@ -48,7 +48,7 @@ export const CmdKModal: React.FC<CmdKModalProps> = ({ isOpen, onClose }) => {
       return "🎓 **Education:** B.Tech in Computer Science & Engineering from Parul University, Vadodara, Gujarat (2023–2027) with CGPA 7.20/10. Graduating in 2027!";
     }
     if (q.includes('contact') || q.includes('email') || q.includes('phone') || q.includes('github')) {
-      return `📬 **Contact Bhavya Kela:** \n• Email: bhavyakela@gmail.com \n• Phone: +91 97730 93843 \n• GitHub: https://github.com/Bhavyakela07`;
+      return `📬 **Contact Bhavya Kela:** \n• Email: bhavyakela@gmail.com \n• GitHub: https://github.com/Bhavyakela07`;
     }
 
     return `🤖 Thanks for your question! Bhavya is a final-year CS undergrad (2027) specializing in Generative AI, RAG architecture, Computer Vision (YOLOv8), and Full-Stack APIs (FastAPI/React). Ask me about RecoverOS, Skill-Gap-Analyzer, KAVAACH, or PerspectAI!`;

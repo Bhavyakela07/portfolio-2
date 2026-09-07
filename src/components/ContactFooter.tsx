@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { resumeData } from '../data/resumeData';
-import { Mail, Phone, Github, Copy, Check, FileDown, ArrowUpRight, Heart, Sparkles } from 'lucide-react';
+import { Mail, Github, Copy, Check, FileDown, ArrowUpRight, Heart, Sparkles } from 'lucide-react';
 
 export const ContactFooter: React.FC = () => {
   const [copied, setCopied] = useState(false);
@@ -72,13 +72,13 @@ export const ContactFooter: React.FC = () => {
           {/* Direct Details Strip */}
           <div className="mt-10 pt-6 border-t border-slate-800/80 flex flex-wrap items-center justify-center gap-6 text-xs font-mono text-slate-400">
             <span className="flex items-center gap-2">
-              <Phone className="w-3.5 h-3.5 text-emerald-400" />
-              {resumeData.phone}
+              <Mail className="w-3.5 h-3.5 text-indigo-400" />
+              {resumeData.email}
             </span>
             <span>•</span>
             <span className="flex items-center gap-2">
-              <Mail className="w-3.5 h-3.5 text-indigo-400" />
-              {resumeData.email}
+              <Github className="w-3.5 h-3.5 text-cyan-400" />
+              github.com/Bhavyakela07
             </span>
           </div>
         </div>

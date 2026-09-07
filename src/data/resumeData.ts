@@ -2,7 +2,7 @@ import { ResumeData } from '../types/portfolio';
 
 export const resumeData: ResumeData = {
   name: "Bhavya Kela",
-  phone: "+91 97730 93843",
+  phone: "",
   email: "bhavyakela@gmail.com",
   github: "Bhavyakela07",
   githubUrl: "https://github.com/Bhavyakela07",
