@@ -277,7 +277,7 @@ export const UnifiedTechUniverse: React.FC = () => {
       <div className="relative z-10 max-w-5xl mx-auto text-center">
         <FadeIn delay={0} y={30}>
           <span className="px-3.5 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs font-mono uppercase tracking-widest">
-            // Consolidated 3D Tech Architecture
+            Consolidated 3D Tech Architecture
           </span>
           <h2 className="hero-heading font-black uppercase text-4xl sm:text-6xl md:text-7xl tracking-tight mt-3">
             Tech Universe
@@ -362,7 +362,7 @@ export const UnifiedTechUniverse: React.FC = () => {
 
       {/* FOOTER METRIC NOTE */}
       <div className="relative z-10 text-center text-xs text-gray-500 font-mono">
-        // Single WebGL Viewport | Zero DOM Node Overhead | 60 FPS Three.js Scene
+        Single WebGL Viewport | Zero DOM Node Overhead | 60 FPS Three.js Scene
       </div>
 
     </section>

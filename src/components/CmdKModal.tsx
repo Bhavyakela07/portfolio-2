@@ -299,7 +299,7 @@ export const CmdKModal: React.FC<CmdKModalProps> = ({ isOpen, onClose }) => {
           <div className="px-4 py-2 bg-slate-950 border-t border-slate-800/80 flex items-center justify-between text-[11px] font-mono text-slate-400">
             <span>Press <kbd className="px-1 py-0.5 rounded bg-slate-800 text-slate-300">Esc</kbd> to exit</span>
             <span className="flex items-center gap-1">
-              <Terminal className="w-3 h-3 text-indigo-400" /> Powered by Bhavya's Resume Knowledge Graph
+              <Terminal className="w-3 h-3 text-indigo-400" /> Powered by Bhavya&apos;s Resume Knowledge Graph
             </span>
           </div>
         </motion.div>
