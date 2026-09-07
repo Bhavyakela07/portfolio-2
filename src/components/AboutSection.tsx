@@ -8,31 +8,32 @@ export const AboutSection: React.FC = () => {
   return (
     <section id="about" className="relative min-h-screen flex flex-col justify-center bg-[#0C0C0C] text-[#D7E2EA] px-5 sm:px-8 md:px-12 lg:px-16 py-16 sm:py-20 md:py-24 overflow-hidden">
       
-      {/* ── DECORATIVE 3D ACCENTS (POSITIONED STRICTLY IN NEGATIVE SPACE) ── */}
+      {/* ── AMBIENT GEOMETRIC ACCENTS (ZERO EXTERNAL DEPENDENCIES) ── */}
       <motion.div
-        animate={{ y: [-5, 5, -5] }}
-        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-[8%] right-[3%] pointer-events-none z-0 opacity-20 hidden lg:block"
+        animate={{ y: [-6, 6, -6], rotate: [0, 5, 0] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute top-[8%] right-[4%] pointer-events-none z-0 opacity-20 hidden lg:block"
+        aria-hidden="true"
       >
-        <img
-          src="https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/lego_icon-1.703bb594.png"
-          alt=""
-          aria-hidden="true"
-          className="w-[120px] xl:w-[150px] h-auto drop-shadow-2xl"
-        />
+        <svg className="w-32 h-32 text-indigo-500/40 drop-shadow-[0_0_20px_rgba(99,102,241,0.2)]" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1.2">
+          <polygon points="50,15 85,35 85,75 50,95 15,75 15,35" />
+          <line x1="50" y1="15" x2="50" y2="95" />
+          <line x1="50" y1="55" x2="85" y2="35" />
+          <line x1="50" y1="55" x2="15" y2="35" />
+        </svg>
       </motion.div>
 
       <motion.div
-        animate={{ y: [5, -5, 5] }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute bottom-[8%] left-[2%] pointer-events-none z-0 opacity-15 hidden lg:block"
+        animate={{ y: [6, -6, 6], rotate: [0, -5, 0] }}
+        transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute bottom-[8%] left-[3%] pointer-events-none z-0 opacity-15 hidden lg:block"
+        aria-hidden="true"
       >
-        <img
-          src="https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/p59_1.4659672e.png"
-          alt=""
-          aria-hidden="true"
-          className="w-[100px] xl:w-[130px] h-auto drop-shadow-2xl"
-        />
+        <svg className="w-28 h-28 text-cyan-500/40 drop-shadow-[0_0_20px_rgba(6,182,212,0.2)]" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1.2">
+          <circle cx="50" cy="50" r="35" strokeDasharray="4 4" />
+          <circle cx="50" cy="50" r="20" />
+          <circle cx="50" cy="50" r="6" fill="currentColor" />
+        </svg>
       </motion.div>
 
       {/* ── MAIN ART-DIRECTED CONTAINER ── */}
@@ -64,7 +65,7 @@ export const AboutSection: React.FC = () => {
             <p className="text-base sm:text-lg font-normal leading-relaxed text-slate-200">
               I&apos;m Bhavya Kela, an AI/ML &amp; Full-Stack Engineer focused on turning AI concepts into usable software.
             </p>
-            <p className="text-sm sm:text-base font-light leading-relaxed text-slate-400">
+            <p className="text-sm sm:text-base font-light leading-relaxed text-slate-400 font-sans">
               I work across Generative AI, RAG, Computer Vision, Machine Learning, and full-stack development, connecting models with APIs, databases, and modern interfaces.
             </p>
           </FadeIn>
