@@ -203,7 +203,7 @@ export const SystemIntroSequence: React.FC<SystemIntroSequenceProps> = ({ onComp
       const elapsed = ts - t0;
 
       ctx.clearRect(0, 0, W, H);
-      ctx.fillStyle = '#08080C';
+      ctx.fillStyle = '#0B0D13';
       ctx.fillRect(0, 0, W, H);
 
       // ── STAGE 1: DARK AMBIENT (~0.8s) ──
@@ -528,7 +528,7 @@ export const SystemIntroSequence: React.FC<SystemIntroSequenceProps> = ({ onComp
     <motion.div
       exit={{ opacity: 0, transition: { duration: 0.45, ease: [0.25, 0.1, 0.25, 1] } }}
       onClick={() => triggerSoftTypingSound()}
-      className="fixed inset-0 z-50 bg-[#08080C]"
+      className="fixed inset-0 z-50 bg-[#0B0D13]"
     >
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
       
@@ -538,7 +538,7 @@ export const SystemIntroSequence: React.FC<SystemIntroSequenceProps> = ({ onComp
           e.stopPropagation();
           onComplete();
         }}
-        className="absolute top-6 right-6 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-slate-800 text-xs font-mono text-slate-400 hover:text-white hover:border-slate-700 transition-all z-50 flex items-center gap-1.5 group cursor-pointer"
+        className="absolute top-6 right-6 px-3.5 py-1.5 rounded-full liquid-chip text-xs font-mono text-slate-300 hover:text-white hover:border-cyan-400/50 transition-all z-50 flex items-center gap-1.5 group cursor-pointer"
       >
         <span>Skip Intro</span>
         <span className="group-hover:translate-x-0.5 transition-transform">→</span>

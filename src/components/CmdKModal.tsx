@@ -101,7 +101,7 @@ export const CmdKModal: React.FC<CmdKModalProps> = ({ isOpen, onClose }) => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="fixed inset-0 bg-slate-950/80 backdrop-blur-md"
+          className="fixed inset-0 bg-[#0B0D13]/85 backdrop-blur-xl"
         />
 
         {/* Modal Window */}
@@ -110,27 +110,30 @@ export const CmdKModal: React.FC<CmdKModalProps> = ({ isOpen, onClose }) => {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: -10 }}
           transition={{ type: 'spring', duration: 0.3 }}
-          className="relative z-50 w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
+          className="relative z-50 w-full max-w-2xl liquid-glass rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
         >
+          {/* Top Specular Rim */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+
           {/* Header Tabs */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-slate-950/50">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.08] bg-white/[0.02]">
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setActiveTab('qa')}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                   activeTab === 'qa'
-                    ? 'bg-indigo-600/30 text-indigo-300 border border-indigo-500/40 shadow-sm'
+                    ? 'liquid-chip text-cyan-300 border-cyan-400/50 shadow-sm'
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
               >
-                <Bot className="w-3.5 h-3.5 text-indigo-400" />
+                <Bot className="w-3.5 h-3.5 text-cyan-400" />
                 AI Resume Chatbot
               </button>
               <button
                 onClick={() => setActiveTab('search')}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                   activeTab === 'search'
-                    ? 'bg-indigo-600/30 text-indigo-300 border border-indigo-500/40 shadow-sm'
+                    ? 'liquid-chip text-cyan-300 border-cyan-400/50 shadow-sm'
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
               >
@@ -141,7 +144,7 @@ export const CmdKModal: React.FC<CmdKModalProps> = ({ isOpen, onClose }) => {
 
             <button
               onClick={onClose}
-              className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.06] transition-colors"
             >
               <X className="w-4 h-4" />
             </button>

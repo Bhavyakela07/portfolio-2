@@ -81,7 +81,7 @@ export const BentoProjects: React.FC<BentoProjectsProps> = ({ onOpenDemo }) => {
   };
 
   return (
-    <section id="projects" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-[#030509]">
+    <section id="projects" className="pt-0 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       
       {/* Section Header */}
       <div className="text-center mb-16">
@@ -121,8 +121,11 @@ export const BentoProjects: React.FC<BentoProjectsProps> = ({ onOpenDemo }) => {
                 ['--light-x' as string]: '50%',
                 ['--light-y' as string]: '50%',
               }}
-              className={`p-6 sm:p-8 rounded-3xl glass-card relative flex flex-col justify-between overflow-hidden group ${colSpan}`}
+              className={`p-6 sm:p-8 rounded-3xl liquid-glass relative flex flex-col justify-between overflow-hidden group ${colSpan}`}
             >
+              {/* Top Specular Rim */}
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+
               {/* Pointer Light Reflection Following Mouse Position */}
               <div
                 className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-3xl"
@@ -134,16 +137,16 @@ export const BentoProjects: React.FC<BentoProjectsProps> = ({ onOpenDemo }) => {
               {/* Card Ambient Glow */}
               <div className={`absolute -top-24 -right-24 w-60 h-60 bg-gradient-to-br ${project.gradient} rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity pointer-events-none`} />
 
-              <div>
+              <div className="relative z-10">
                 {/* Top Badge & Demo Trigger */}
                 <div className="flex items-center justify-between gap-2 mb-4">
-                  <span className="px-3 py-1 rounded-full bg-slate-900/90 text-slate-300 text-[11px] font-mono border border-slate-800">
+                  <span className="liquid-chip px-3 py-1 rounded-full text-slate-200 text-[11px] font-mono">
                     {project.subtitle}
                   </span>
 
                   <button
                     onClick={() => onOpenDemo(project)}
-                    className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-950/90 hover:bg-indigo-900 border border-indigo-700/60 text-indigo-300 text-xs font-semibold shadow-sm transition-all hover:scale-105"
+                    className="liquid-chip flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-cyan-300 hover:text-white hover:border-cyan-400/60 text-xs font-semibold shadow-sm transition-all hover:scale-105"
                   >
                     <Sparkles className="w-3.5 h-3.5 text-amber-400" />
                     Test Live Demo
@@ -151,7 +154,7 @@ export const BentoProjects: React.FC<BentoProjectsProps> = ({ onOpenDemo }) => {
                 </div>
 
                 {/* Project Title */}
-                <h3 className="text-2xl font-extrabold text-slate-100 group-hover:text-indigo-300 transition-colors">
+                <h3 className="text-2xl font-extrabold text-slate-100 group-hover:text-cyan-300 transition-colors">
                   {project.title}
                 </h3>
 
@@ -161,14 +164,14 @@ export const BentoProjects: React.FC<BentoProjectsProps> = ({ onOpenDemo }) => {
                 </p>
 
                 {/* Architectural Data Flow Blueprint */}
-                <div className="mt-5 p-3 rounded-xl bg-slate-950/90 border border-slate-800/80">
-                  <div className="text-[10px] font-mono text-indigo-400 uppercase font-bold flex items-center gap-1 mb-2">
+                <div className="mt-5 p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md">
+                  <div className="text-[10px] font-mono text-cyan-400 uppercase font-bold flex items-center gap-1.5 mb-2.5">
                     <Workflow className="w-3 h-3 text-cyan-400" /> SYSTEM DATA FLOW BLUEPRINT
                   </div>
-                  <div className="flex flex-wrap items-center gap-1 text-[11px] font-mono text-slate-300">
+                  <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-mono text-slate-200">
                     {pipeline.map((step, sIdx) => (
                       <React.Fragment key={sIdx}>
-                        <span className="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                        <span className="px-2 py-0.5 rounded-md bg-white/[0.05] border border-white/[0.08] text-slate-200 shadow-sm">
                           {step}
                         </span>
                         {sIdx < pipeline.length - 1 && (
@@ -192,7 +195,7 @@ export const BentoProjects: React.FC<BentoProjectsProps> = ({ onOpenDemo }) => {
                 {/* Key Metrics Pills */}
                 <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-2">
                   {project.metrics.map((metric, mIdx) => (
-                    <div key={mIdx} className="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800/80 text-center">
+                    <div key={mIdx} className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.07] backdrop-blur-sm text-center">
                       <div className="text-[10px] font-mono text-slate-400 uppercase">{metric.label}</div>
                       <div className="text-xs font-bold text-slate-200 mt-0.5">{metric.value}</div>
                     </div>
@@ -201,10 +204,10 @@ export const BentoProjects: React.FC<BentoProjectsProps> = ({ onOpenDemo }) => {
               </div>
 
               {/* Tags & GitHub Link */}
-              <div className="mt-8 pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3">
+              <div className="mt-8 pt-4 border-t border-white/[0.08] flex flex-wrap items-center justify-between gap-3 relative z-10">
                 <div className="flex flex-wrap gap-1.5">
                   {project.tags.map((tag, tIdx) => (
-                    <span key={tIdx} className="px-2.5 py-0.5 rounded-md bg-slate-900 text-[10px] font-mono text-slate-400 border border-slate-800">
+                    <span key={tIdx} className="px-2.5 py-0.5 rounded-md bg-white/[0.04] text-[10px] font-mono text-slate-300 border border-white/[0.06]">
                       {tag}
                     </span>
                   ))}
@@ -215,7 +218,7 @@ export const BentoProjects: React.FC<BentoProjectsProps> = ({ onOpenDemo }) => {
                     href={project.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 text-xs font-mono text-indigo-400 hover:text-indigo-300 transition-colors font-semibold"
+                    className="flex items-center gap-1.5 text-xs font-mono text-cyan-400 hover:text-cyan-300 transition-colors font-semibold"
                   >
                     <Github className="w-4 h-4" />
                     Repository ↗

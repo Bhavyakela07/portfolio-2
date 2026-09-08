@@ -6,7 +6,7 @@ import { FadeIn } from './FadeIn';
 
 export const AboutSection: React.FC = () => {
   return (
-    <section id="about" className="relative min-h-screen flex flex-col justify-center bg-[#0C0C0C] text-[#D7E2EA] px-5 sm:px-8 md:px-12 lg:px-16 py-16 sm:py-20 md:py-24 overflow-hidden">
+    <section id="about" className="relative min-h-screen flex flex-col justify-center bg-transparent text-slate-100 px-5 sm:px-8 md:px-12 lg:px-16 py-16 sm:py-20 md:py-24 overflow-hidden">
       
       {/* ── AMBIENT GEOMETRIC ACCENTS (ZERO EXTERNAL DEPENDENCIES) ── */}
       <motion.div
@@ -43,66 +43,35 @@ export const AboutSection: React.FC = () => {
         <div className="space-y-3.5 max-w-3xl">
           <FadeIn delay={0} y={15}>
             <span className="inline-block text-xs font-mono font-bold tracking-widest text-cyan-400 uppercase bg-cyan-950/60 px-3 py-1 rounded-full border border-cyan-800/60">
-              ABOUT / 01
+              01 &mdash; PHILOSOPHY
             </span>
           </FadeIn>
 
-          <FadeIn delay={0.1} y={20} blur={2}>
-            <h2
-              className="font-black uppercase tracking-tight leading-[1.08] text-slate-100 text-balance"
-              style={{ fontSize: 'clamp(1.8rem, 3.8vw, 3.2rem)' }}
-            >
-              Building intelligent<br className="hidden sm:inline" /> systems, end to end.
+          <FadeIn delay={0.1} y={20}>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-black uppercase tracking-tight leading-[1.08] text-slate-100">
+              I build production-grade AI systems and full-stack software.
             </h2>
           </FadeIn>
         </div>
 
-        {/* 2. INTRO + PHILOSOPHY CARD (UNIFIED COMPOSITION) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-stretch">
-          
-          {/* Introduction Paragraphs */}
-          <FadeIn delay={0.2} y={20} className="lg:col-span-7 flex flex-col justify-center space-y-3.5">
-            <p className="text-base sm:text-lg font-normal leading-relaxed text-slate-200">
-              I&apos;m Bhavya Kela, an AI/ML &amp; Full-Stack Engineer focused on turning AI concepts into usable software.
+        {/* 2. THREE CORE PILLARS (LIQUID GLASS CARDS) */}
+        <div className="space-y-4">
+          <FadeIn delay={0.3} y={15}>
+            <p className="text-xs font-mono uppercase tracking-widest text-slate-400">
+              Core Engineering Focus &mdash;
             </p>
-            <p className="text-sm sm:text-base font-light leading-relaxed text-slate-400 font-sans">
-              I work across Generative AI, RAG, Computer Vision, Machine Learning, and full-stack development, connecting models with APIs, databases, and modern interfaces.
-            </p>
-          </FadeIn>
-
-          {/* Philosophy Statement Card */}
-          <FadeIn delay={0.3} y={20} className="lg:col-span-5 flex">
-            <div className="p-5 sm:p-6 rounded-2xl glass-card border border-indigo-500/25 relative overflow-hidden group w-full flex flex-col justify-center">
-              <div className="absolute -top-16 -right-16 w-36 h-36 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none group-hover:bg-indigo-500/20 transition-all duration-300" />
-              <div className="text-xs font-mono font-extrabold tracking-widest text-indigo-400 uppercase mb-2.5 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
-                AI &times; ENGINEERING &times; PRODUCT
-              </div>
-              <p className="text-xs sm:text-sm font-normal leading-relaxed text-slate-300">
-                I enjoy solving problems where intelligence isn&apos;t isolated in a model &mdash; it has to work reliably as part of a complete system.
-              </p>
-            </div>
-          </FadeIn>
-
-        </div>
-
-        {/* 3. CORE DIMENSIONS CARDS */}
-        <div className="space-y-3.5">
-          <FadeIn delay={0.35} y={15}>
-            <h3 className="text-xs font-mono font-bold tracking-widest text-slate-400 uppercase">
-              CORE DIMENSIONS
-            </h3>
           </FadeIn>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
             
             {/* CARD 01 — BUILD */}
             <FadeIn delay={0.4} y={20}>
-              <div className="p-5 sm:p-6 rounded-2xl bg-slate-950/80 border border-slate-800/80 hover:border-cyan-500/40 hover:-translate-y-1 transition-all duration-300 h-full flex flex-col justify-between space-y-3 group">
-                <span className="text-xs font-mono font-extrabold tracking-wider text-cyan-400 uppercase bg-cyan-950/50 px-2.5 py-1 rounded-md border border-cyan-900/60 w-max">
+              <div className="liquid-glass p-5 sm:p-6 rounded-2xl hover:-translate-y-1.5 transition-all duration-300 h-full flex flex-col justify-between space-y-4 group relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent" />
+                <span className="text-xs font-mono font-extrabold tracking-wider text-cyan-400 uppercase liquid-chip px-2.5 py-1 rounded-lg w-max">
                   01 &mdash; BUILD
                 </span>
-                <p className="text-sm font-semibold text-slate-200 leading-snug group-hover:text-white transition-colors">
+                <p className="text-sm font-semibold text-slate-100 leading-snug group-hover:text-cyan-200 transition-colors">
                   AI-powered applications<br />and ML systems.
                 </p>
               </div>
@@ -110,11 +79,12 @@ export const AboutSection: React.FC = () => {
 
             {/* CARD 02 — ENGINEER */}
             <FadeIn delay={0.48} y={20}>
-              <div className="p-5 sm:p-6 rounded-2xl bg-slate-950/80 border border-slate-800/80 hover:border-indigo-500/40 hover:-translate-y-1 transition-all duration-300 h-full flex flex-col justify-between space-y-3 group">
-                <span className="text-xs font-mono font-extrabold tracking-wider text-indigo-400 uppercase bg-indigo-950/50 px-2.5 py-1 rounded-md border border-indigo-900/60 w-max">
+              <div className="liquid-glass p-5 sm:p-6 rounded-2xl hover:-translate-y-1.5 transition-all duration-300 h-full flex flex-col justify-between space-y-4 group relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-indigo-400/40 to-transparent" />
+                <span className="text-xs font-mono font-extrabold tracking-wider text-indigo-400 uppercase liquid-chip px-2.5 py-1 rounded-lg w-max">
                   02 &mdash; ENGINEER
                 </span>
-                <p className="text-sm font-semibold text-slate-200 leading-snug group-hover:text-white transition-colors">
+                <p className="text-sm font-semibold text-slate-100 leading-snug group-hover:text-indigo-200 transition-colors">
                   APIs, databases,<br />architecture and interfaces.
                 </p>
               </div>
@@ -122,11 +92,12 @@ export const AboutSection: React.FC = () => {
 
             {/* CARD 03 — EXPLORE */}
             <FadeIn delay={0.56} y={20}>
-              <div className="p-5 sm:p-6 rounded-2xl bg-slate-950/80 border border-slate-800/80 hover:border-purple-500/40 hover:-translate-y-1 transition-all duration-300 h-full flex flex-col justify-between space-y-3 group">
-                <span className="text-xs font-mono font-extrabold tracking-wider text-purple-400 uppercase bg-purple-950/50 px-2.5 py-1 rounded-md border border-purple-900/60 w-max">
+              <div className="liquid-glass p-5 sm:p-6 rounded-2xl hover:-translate-y-1.5 transition-all duration-300 h-full flex flex-col justify-between space-y-4 group relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-purple-400/40 to-transparent" />
+                <span className="text-xs font-mono font-extrabold tracking-wider text-purple-400 uppercase liquid-chip px-2.5 py-1 rounded-lg w-max">
                   03 &mdash; EXPLORE
                 </span>
-                <p className="text-sm font-semibold text-slate-200 leading-snug group-hover:text-white transition-colors">
+                <p className="text-sm font-semibold text-slate-100 leading-snug group-hover:text-purple-200 transition-colors">
                   New AI technologies,<br />architectures and real-world use cases.
                 </p>
               </div>

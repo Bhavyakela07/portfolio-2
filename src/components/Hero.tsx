@@ -11,21 +11,21 @@ interface HeroProps {
 
 export const Hero: React.FC<HeroProps> = ({ openCmdK }) => {
   return (
-    <section className="relative min-h-[92vh] sm:min-h-screen flex flex-col justify-between overflow-x-clip bg-[#0C0C0C] text-[#D7E2EA] px-4 sm:px-6 md:px-10 pt-6 md:pt-8 pb-8">
+    <section className="relative min-h-[92vh] sm:min-h-screen flex flex-col justify-between overflow-x-clip bg-transparent text-slate-100 px-4 sm:px-6 md:px-10 pt-6 md:pt-8 pb-8">
       
       {/* ── 1. NAVBAR ── */}
       <FadeIn delay={0} y={-15} className="w-full z-20">
-        <nav className="flex items-center justify-between w-full text-xs sm:text-base md:text-lg lg:text-[1.25rem] font-medium uppercase tracking-wider text-[#D7E2EA]">
-          <a href="#about" className="hover:opacity-70 transition-opacity duration-200">
+        <nav className="flex items-center justify-between w-full text-xs sm:text-base md:text-lg lg:text-[1.25rem] font-medium uppercase tracking-wider text-slate-200">
+          <a href="#about" className="hover:text-cyan-400 transition-colors duration-200">
             About
           </a>
-          <a href="#projects" className="hover:opacity-70 transition-opacity duration-200">
+          <a href="#projects" className="hover:text-cyan-400 transition-colors duration-200">
             Projects
           </a>
-          <a href="#skills" className="hover:opacity-70 transition-opacity duration-200">
+          <a href="#skills" className="hover:text-cyan-400 transition-colors duration-200">
             Stack
           </a>
-          <a href="#contact" className="hover:opacity-70 transition-opacity duration-200">
+          <a href="#contact" className="hover:text-cyan-400 transition-colors duration-200">
             Contact
           </a>
         </nav>

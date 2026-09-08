@@ -11,7 +11,7 @@ import { ContactFooter } from '../components/ContactFooter';
 import { CmdKModal } from '../components/CmdKModal';
 import { ProjectDemos } from '../components/ProjectDemos';
 import { SystemIntroSequence } from '../components/SystemIntroSequence';
-import { ThreeCanvas } from '../components/ThreeCanvas';
+import { MagneticGridBackground } from '../components/MagneticGridBackground';
 import { AnimatePresence } from 'framer-motion';
 
 export default function Home() {
@@ -26,7 +26,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#0C0C0C] text-[#D7E2EA] relative selection:bg-emerald-500 selection:text-slate-950 overflow-x-clip">
+    <main className="min-h-screen bg-[#0B0D13] text-[#F1F5F9] relative selection:bg-cyan-500 selection:text-slate-950 overflow-x-clip">
       
       {/* 4-Phase System Story Intro (human -> intelligence -> technology -> engineer) */}
       <AnimatePresence>
@@ -35,8 +35,19 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* 3D WebGL Particle Nebula Background Canvas */}
-      <ThreeCanvas />
+      {/* Interactive Magnetic Grid Background (Framer Component) */}
+      <MagneticGridBackground
+        dotColor="#475569"
+        activeColor="#22d3ee"
+        dotSize={4.2}
+        dotSpacing={26}
+        influenceRadius={160}
+        attractMode={false}
+        maxDisplace={16}
+        springStiffness={260}
+        springDamping={20}
+        dotOpacity={0.75}
+      />
 
       {/* 1. Hero Section (HI, I'M BHAVYA - Perfectly Framed) */}
       <Hero

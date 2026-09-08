@@ -71,7 +71,7 @@ export const ProjectDemos: React.FC<ProjectDemosProps> = ({ project, onClose }) 
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="fixed inset-0 bg-slate-950/85 backdrop-blur-md"
+          className="fixed inset-0 bg-[#0B0D13]/85 backdrop-blur-xl"
         />
 
         {/* Demo Modal Container */}
@@ -79,16 +79,19 @@ export const ProjectDemos: React.FC<ProjectDemosProps> = ({ project, onClose }) 
           initial={{ opacity: 0, scale: 0.95, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
-          className="relative z-50 w-full max-w-3xl bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+          className="relative z-50 w-full max-w-3xl liquid-glass rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
         >
+          {/* Top Specular Rim */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-950/60">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.08] bg-white/[0.02]">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-indigo-950 border border-indigo-800/80 text-indigo-400">
+              <div className="p-2.5 rounded-xl liquid-chip text-cyan-400">
                 <Sparkles className="w-5 h-5" />
               </div>
               <div>
-                <span className="text-[11px] font-mono text-indigo-400 font-semibold tracking-wider uppercase">
+                <span className="text-[11px] font-mono text-cyan-400 font-semibold tracking-wider uppercase">
                   Interactive Micro-Demo Simulator
                 </span>
                 <h3 className="text-lg font-bold text-slate-100">{project.title}</h3>
@@ -97,7 +100,7 @@ export const ProjectDemos: React.FC<ProjectDemosProps> = ({ project, onClose }) 
 
             <button
               onClick={onClose}
-              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/[0.06] transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
